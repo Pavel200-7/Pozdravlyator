@@ -9,6 +9,14 @@
 <div>
     <h4>Person</h4>
     <hr />
+    @if (!string.IsNullOrEmpty(Model.PicturePath))
+    {
+        <img src="~/images/@Url.Content(Model.PicturePath)" alt="Sample Photo" class="small-img" />
+    }
+    else
+    {
+        <img src="~/images/base.png" alt="Sample Photo" class="small-img" />
+    }
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)

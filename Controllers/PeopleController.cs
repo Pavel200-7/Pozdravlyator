@@ -9,6 +9,7 @@ using Pozdravlyator.Data;
 using Pozdravlyator.Models;
 using System.Web;
 using Pozdravlyator.Services;
+using Microsoft.CodeAnalysis.Elfie.Model;
 
 
 namespace Pozdravlyator.Controllers
@@ -59,12 +60,18 @@ namespace Pozdravlyator.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,BirthDay")] Person person, IFormFile PhotoFile)
+        public async Task<IActionResult> Create([Bind("Id,Name,BirthDay")] Person person, IFormFile? PhotoFile)
         {
             if (ModelState.IsValid)
             {
-                string newUniqueFileName = _imageWorker.CreateImageFile(ref PhotoFile);
-                person.PicturePath = newUniqueFileName;
+                if (PhotoFile != null)
+                {
+                    string newUniqueFileName = _imageWorker.CreateImageFile(ref PhotoFile);
+                    person.PicturePath = newUniqueFileName;
+                } else
+                {
+                    person.PicturePath = null;
+                }
                 _context.Add(person);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -93,7 +100,7 @@ namespace Pozdravlyator.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,BirthDay,PicturePath")] Person person)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,BirthDay,PicturePath")] Person person, IFormFile? PhotoFile)
         {
             if (id != person.Id)
             {
@@ -102,8 +109,15 @@ namespace Pozdravlyator.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
+                try {                
+                    if (PhotoFile != null && person.PicturePath != null)
+                    {
+                        person.PicturePath = _imageWorker.UpdateImageFile(ref PhotoFile, person.PicturePath);
+                    } else if (PhotoFile != null && person.PicturePath == null)
+                    {
+                        person.PicturePath = _imageWorker.CreateImageFile(ref PhotoFile);
+                    }
+
                     _context.Update(person);
                     await _context.SaveChangesAsync();
                 }
@@ -149,6 +163,10 @@ namespace Pozdravlyator.Controllers
             var person = await _context.Person.FindAsync(id);
             if (person != null)
             {
+                if (person.PicturePath != null)
+                {
+                    _imageWorker.DeleteImageFile(person.PicturePath);
+                }
                 _context.Person.Remove(person);
             }
 

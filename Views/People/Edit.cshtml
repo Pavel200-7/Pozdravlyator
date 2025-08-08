@@ -6,11 +6,23 @@
 
 <h1>Edit</h1>
 
+
+
 <h4>Person</h4>
+
 <hr />
+
 <div class="row">
+    @if (!string.IsNullOrEmpty(Model.PicturePath))
+    {
+        <img src="~/images/@Url.Content(Model.PicturePath)" alt="Sample Photo" class="small-img" />
+    }
+    else
+    {
+        <img src="~/images/base.png" alt="Sample Photo" class="small-img" />
+    }
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -25,7 +37,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="PicturePath" class="control-label"></label>
-                <input asp-for="PicturePath" class="form-control" />
+                <input type="file" name="PhotoFile" class="form-control" />
+                <input asp-for="PicturePath" class="form-control" type="hidden" />
                 <span asp-validation-for="PicturePath" class="text-danger"></span>
             </div>
             <div class="form-group">
