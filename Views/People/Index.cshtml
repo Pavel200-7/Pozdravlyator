@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Pozdravlyator.Models.Person>
+﻿@using Pozdravlyator.Models;
+@model IEnumerable<Pozdravlyator.Models.Person>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +14,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.IdSort">
+                    @Html.DisplayNameFor(model => model.Id)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BirthDay)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort">
+                    @Html.DisplayNameFor(model => model.Name)
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.BirthDaySort">
+                    @Html.DisplayNameFor(model => model.BirthDay)
+                </a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PicturePath)
@@ -27,6 +37,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>

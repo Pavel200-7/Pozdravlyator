@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Pozdravlyator.Data;
 using Pozdravlyator.Services;
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<PozdravlyatorContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PozdravlyatorContext") ?? throw new InvalidOperationException("Connection string 'PozdravlyatorContext' not found.")));
 

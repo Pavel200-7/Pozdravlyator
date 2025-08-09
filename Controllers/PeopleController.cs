@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Model;
 using Microsoft.EntityFrameworkCore;
 using Pozdravlyator.Data;
 using Pozdravlyator.Models;
-using System.Web;
 using Pozdravlyator.Services;
-using Microsoft.CodeAnalysis.Elfie.Model;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
 
 
 namespace Pozdravlyator.Controllers
@@ -26,9 +27,28 @@ namespace Pozdravlyator.Controllers
         }
 
         // GET: People
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PersonSortState sortOrder = PersonSortState.IdAsk)
         {
-            return View(await _context.Person.ToListAsync());
+            IQueryable<Person> people = _context.Person;
+
+            ViewData["IdSort"] = sortOrder == PersonSortState.IdAsk ? PersonSortState.IdDesc : PersonSortState.IdAsk;
+            ViewData["NameSort"] = sortOrder == PersonSortState.NameAsk ? PersonSortState.NameDesc : PersonSortState.NameAsk;
+            ViewData["BirthDaySort"] = sortOrder == PersonSortState.BirthDayAsk ? PersonSortState.BirthDayDesc : PersonSortState.BirthDayAsk;
+
+            people= sortOrder switch
+            {
+                PersonSortState.IdDesc => people.OrderByDescending(s => s.Id),
+                PersonSortState.NameAsk => people.OrderBy(s => s.Name),
+                PersonSortState.NameDesc => people.OrderByDescending(s => s.Name),
+                PersonSortState.BirthDayAsk => people.OrderBy(s => s.BirthDay),
+                PersonSortState.BirthDayDesc => people.OrderByDescending(s => s.BirthDay),
+                _ => people.OrderBy(s => s.Id),
+            };
+
+
+            return View(await people.AsNoTracking().ToListAsync());
+
+            //return View(await _context.Person.ToListAsync());
         }
 
         // GET: People/Details/5

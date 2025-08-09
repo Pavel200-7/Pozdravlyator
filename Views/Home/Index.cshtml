@@ -1,9 +1,33 @@
-﻿@{
+﻿@using Pozdravlyator.Models;
+@model IEnumerable<Pozdravlyator.Models.Person>
+@{
     ViewData["Title"] = "Поздравлятор";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Добро пожаловать в поздравлятор</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
-</div>
+<h1>Список ближайших именинников</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirthDay)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="@(item.BirthDay < DateTime.Now ? "highlight" : "")">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirthDay)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

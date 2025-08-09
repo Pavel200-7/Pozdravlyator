@@ -17,12 +17,6 @@ public interface IImageWorker
     { 
         return ""; 
     }
-
-    //public bool AreTheSameFiles(IFormFile? PhotoFile, string? currentFile)
-    //{
-    //    return true;
-    //}
-
 }
 
 
@@ -30,8 +24,6 @@ public class ImageWorker : IImageWorker
 {
     private string pathToImagedir;
     private readonly IWebHostEnvironment _env;
-    const int BYTES_TO_READ = sizeof(Int64);
-
 
     public ImageWorker(IWebHostEnvironment env)
     {
@@ -69,9 +61,4 @@ public class ImageWorker : IImageWorker
         DeleteImageFile(currentFile);
         return CreateImageFile(ref PhotoFile);
     }
-
-    //public bool AreTheSameFiles(ref IFormFile PhotoFile, string currentFile)
-    //{
-    //}
-
 }

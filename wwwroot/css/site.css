@@ -26,3 +26,12 @@ body {
     height: auto; 
     border-radius: 4px; 
 }
+
+.highlight {
+    background-color: #98FB98;
+}
+
+tr:hover {
+    background: #DCDCDC;
+}
+
